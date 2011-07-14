@@ -1,6 +1,7 @@
 module PEHelpers.NumberTheory
 (
   primes,
+  isPrime,
   divisorsIn,
   allDivisors,
   nonTrivialDivisors,
