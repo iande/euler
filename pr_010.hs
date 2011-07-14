@@ -13,7 +13,7 @@ Find the sum of all the primes below two million.
 
 --}
 
-import PEHelpers.Primes
+import PEHelpers.NumberTheory
 
 
 

@@ -1,14 +1,34 @@
-module PEHelpers.Factoring
+module PEHelpers.NumberTheory
 (
+  primes,
   divisorsIn,
   allDivisors,
   nonTrivialDivisors,
   firstPrimeDivisor,
   primeDivisors,
-  primeFactorization
+  primeFactorization,
+  sumOfDivisors,
+  aliquotSum,
+  aliquotSequence,
+  properDivisorsOf,
+  divisorsOf,
+  isAmicable,
+  fibonacciNumbers
 ) where
   
-import Data.List (group, sort)
+import Data.List (group, sort, unfoldr)
+
+-- Based on a solution provided by vineet.  MUCH faster than my seive method.
+-- I like it and I need to embrace deeper recursive constructs like this.
+
+-- (d:ds) must be in ascending order for this to work
+isPrime [] n = True
+isPrime (d:ds) n
+  | d*d > n      = True
+  | mod n d == 0 = False
+  | otherwise    = isPrime ds n
+
+primes = 2 : (filter (isPrime primes) [3..])
 
 fsqrt :: Int -> Int
 fsqrt n = floor . sqrt $ fromIntegral n
@@ -19,7 +39,11 @@ divisorsIn n xs = toPair . selDiv $ xs
                   selDiv = filter (\d -> mod n d == 0)
 
 divisorsOf k = foldl accum [1,k] [2..(fsqrt k)]
-  where accum ds n = if mod k n == 0 then n : (div k n) : ds else ds
+  where accum ds n
+          | m == 0    = if n == d then n : ds else n : d : ds
+          | otherwise = ds
+          where (d,m) = divMod k n
+
 properDivisorsOf k = init $ divisorsOf k
 
 allDivisors :: Int -> [(Int, Int)]
@@ -49,3 +73,12 @@ primeDivisors n = takePrimes (firstPrimeDivisor n)
 primeFactorization :: Int -> [(Int,Int)]
 primeFactorization n = map (\g -> (head g, length g)) $ group (primeDivisors n)
 
+sumOfDivisors k = sum . (map (\a -> a ^ k)) . divisorsOf
+
+aliquotSum n = sumOfDivisors 1 n - n
+
+aliquotSequence = iterate aliquotSum
+
+isAmicable k = let ak = aliquotSum k in k /= ak && aliquotSum ak == k
+
+fibonacciNumbers = unfoldr (\(f1,f2) -> Just (f1, (f2, f1 + f2))) (0, 1)

@@ -20,7 +20,7 @@ What is the value of the first triangle number to have over five hundred
 divisors?
 --}
 
-import PEHelpers.Factoring
+import PEHelpers.NumberTheory
 import Data.List (find)
 
 -- Clearly, the nth triangle number => n * (n + 1) / 2

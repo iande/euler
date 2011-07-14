@@ -3,11 +3,12 @@ module PEHelpers.Primes
 
 -- Based on a solution provided by vineet.  MUCH faster than my seive method.
 -- I like it and I need to embrace deeper recursive constructs like this.
-isPrime :: Int -> Bool
-isPrime n = ipp n primes
-  where ipp n (p:ps)
-          | p*p > n      = True
-          | mod n p == 0 = False
-          | otherwise    = ipp n ps
 
-primes = 2 : (filter isPrime [3..])
+-- (d:ds) must be in ascending order for this to work
+isPrime [] n = True
+isPrime (d:ds) n
+  | d*d > n      = True
+  | mod n d == 0 = False
+  | otherwise    = isPrime ds n
+
+primes = 2 : (filter (isPrime primes) [3..])
